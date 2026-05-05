@@ -1,35 +1,17 @@
-# Paytm-database-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 import requests
 
 app = Flask(__name__)
 
-# Original API yahan डालो
-REAL_API = "https://paid.proportalx.workers.dev/number?key=Rexultron&num="
+# यहाँ अपना असली Hugging Face API या कोई भी URL डालें
+REAL_API = "https://paid.proportalx.workers.dev/number?key=Rexultron&num=" 
 
-@app.route("/")
-def home():
-    return jsonify({
-        "status": "API Mask Running"
-    })
-
-# Masked endpoint
 @app.route("/api")
 def masked_api():
+    # आप चाहें तो यहाँ अपना API Token भी छिपा सकते हैं
+    r = requests.get(REAL_API)
+    return jsonify(r.json())
 
-    # Original API call
-    response = requests.get(REAL_API)
-
-    try:
-        data = response.json()
-    except:
-        return jsonify({"error": "API response invalid"})
-
-    # Example masking
-    if "mobile" in data:
-        mobile = str(data["mobile"])
-        data["mobile"] = mobile[:2] + "******"
-
-    return jsonify(data)
-
-# Vercel entry
-app = app
+# Vercel के लिए यह ज़रूरी है
+if __name__ == "__main__":
+    app.run()
